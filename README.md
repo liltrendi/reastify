@@ -2,9 +2,9 @@
 
 Recursive module that converts html abstract syntax trees (AST's) into a renderable React element.
 
-This data follows the premise that it has one source of truth that branches into embedded children whose nodes are not known at compile time.
+This data follows the premise that it has one source of truth that branches into embedded (similar) children whose nodes are not known at compile time.
 
-The AST passed is queried from contentful, with a similar format to the one below:
+The AST that needs to be passed has a format similar to the one below:
 
 ```js
 let htmlAst = {
@@ -88,10 +88,10 @@ import React from "react"
 import {reastify} from "@liltrendi/reastify"
 
 const App = ({htmlAst}) => {
-    let reactifiedAst = reastify(htmlAst)
+    let yourElement = reastify(htmlAst)
     return (
         <React.Fragment>
-            {reastifiedAst}
+            {yourElement}
         </React.Fragment>
     )
 }
@@ -101,7 +101,7 @@ export default App;
 
 ## Props
 
-Both the function and the component use a similar model, based off of these typescript interfaces:
+The function uses a model based off of these typescript interfaces:
 
 ```ts
 interface I_ReastifyNode {
@@ -144,4 +144,4 @@ interface I_ReastifyProps {
 
 ## To Do
 
-Abstract it into a class with helper methods
+Abstract it into a class with helper methods. PRs are welcome.
