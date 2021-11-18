@@ -15,4 +15,4 @@ const Reastify: React.FC<I_ReastifyProps> = (props: I_ReastifyProps): JSX.Elemen
     return <>{element}</>
 }
 
-export default Reastify;
+export { Reastify };

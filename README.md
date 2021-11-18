@@ -1,10 +1,10 @@
 ## Reastify
 
-Recursive module that converts html ast (for example, from Contentful) to react.
+Recursive module that converts html abstract syntax trees (AST's) into a renderable React element.
 
 This data follows the premise that it has one source of truth that branches into embedded children whose nodes are not known at compile time.
 
-The data passed is of a similar format to the one below:
+The AST passed is queried from contentful, with a similar format to the one below:
 
 ```js
 let htmlAst = {
@@ -78,10 +78,10 @@ npm i @liltrendi/reastify
 Import it into your app
 
 ```js
-import Reastify, {reastify} from "@liltrendi/reastify"
+import {reastify} from "@liltrendi/reastify"
 ```
 
-And pretty much pass the HTML ast data to the ``reastify`` function or as a prop to the ``Reastify`` component, like so:
+And pretty much pass the AST data to the ``reastify`` function like so:
 
 ```js
 import React from "react"
@@ -94,19 +94,6 @@ const App = ({htmlAst}) => {
             {reastifiedAst}
         </React.Fragment>
     )
-}
-
-export default App;
-```
-
-Or you can directly use the component it exports like this:
-
-```js
-import React from "react"
-import Reastify from "@liltrendi/reastify"
-
-const App = ({htmlAst}) => {
-    return <Reastify htmlAst={htmlAst} />
 }
 
 export default App;
@@ -154,3 +141,7 @@ interface I_ReastifyProps {
     linkOnclick?: (event: React.MouseEvent<HTMLElement>) => any;
 }
 ```
+
+## To Do
+
+Abstract it into a class with helper methods
