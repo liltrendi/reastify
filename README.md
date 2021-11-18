@@ -1,160 +1,156 @@
-# TSDX React User Guide
+## Reastify
 
-Congrats! You just saved yourself hours of work by bootstrapping this project with TSDX. Let’s get you oriented with what’s here and how to use it.
+Recursive module that converts html ast (for example, from Contentful) to react.
 
-> This TSDX setup is meant for developing React component libraries (not apps!) that can be published to NPM. If you’re looking to build a React-based app, you should use `create-react-app`, `razzle`, `nextjs`, `gatsby`, or `react-static`.
+This data follows the premise that it has one source of truth that branches into embedded children whose nodes are not known at compile time.
 
-> If you’re new to TypeScript and React, checkout [this handy cheatsheet](https://github.com/sw-yx/react-typescript-cheatsheet/)
-
-## Commands
-
-TSDX scaffolds your new library inside `/src`, and also sets up a [Parcel-based](https://parceljs.org) playground for it inside `/example`.
-
-The recommended workflow is to run TSDX in one terminal:
-
-```bash
-npm start # or yarn start
-```
-
-This builds to `/dist` and runs the project in watch mode so any edits you save inside `src` causes a rebuild to `/dist`.
-
-Then run the example inside another:
-
-```bash
-cd example
-npm i # or yarn to install dependencies
-npm start # or yarn start
-```
-
-The default example imports and live reloads whatever is in `/dist`, so if you are seeing an out of date component, make sure TSDX is running in watch mode like we recommend above. **No symlinking required**, we use [Parcel's aliasing](https://parceljs.org/module_resolution.html#aliases).
-
-To do a one-off build, use `npm run build` or `yarn build`.
-
-To run tests, use `npm test` or `yarn test`.
-
-## Configuration
-
-Code quality is set up for you with `prettier`, `husky`, and `lint-staged`. Adjust the respective fields in `package.json` accordingly.
-
-### Jest
-
-Jest tests are set up to run with `npm test` or `yarn test`.
-
-### Bundle analysis
-
-Calculates the real cost of your library using [size-limit](https://github.com/ai/size-limit) with `npm run size` and visulize it with `npm run analyze`.
-
-#### Setup Files
-
-This is the folder structure we set up for you:
-
-```txt
-/example
-  index.html
-  index.tsx       # test your component here in a demo app
-  package.json
-  tsconfig.json
-/src
-  index.tsx       # EDIT THIS
-/test
-  blah.test.tsx   # EDIT THIS
-.gitignore
-package.json
-README.md         # EDIT THIS
-tsconfig.json
-```
-
-#### React Testing Library
-
-We do not set up `react-testing-library` for you yet, we welcome contributions and documentation on this.
-
-### Rollup
-
-TSDX uses [Rollup](https://rollupjs.org) as a bundler and generates multiple rollup configs for various module formats and build settings. See [Optimizations](#optimizations) for details.
-
-### TypeScript
-
-`tsconfig.json` is set up to interpret `dom` and `esnext` types, as well as `react` for `jsx`. Adjust according to your needs.
-
-## Continuous Integration
-
-### GitHub Actions
-
-Two actions are added by default:
-
-- `main` which installs deps w/ cache, lints, tests, and builds on all pushes against a Node and OS matrix
-- `size` which comments cost comparison of your library on every pull request using [`size-limit`](https://github.com/ai/size-limit)
-
-## Optimizations
-
-Please see the main `tsdx` [optimizations docs](https://github.com/palmerhq/tsdx#optimizations). In particular, know that you can take advantage of development-only optimizations:
+The data passed is of a similar format to the one below:
 
 ```js
-// ./types/index.d.ts
-declare var __DEV__: boolean;
-
-// inside your code...
-if (__DEV__) {
-  console.log('foo');
+let htmlAst = {
+    type: "root",
+    tagName: "p",
+    properties: {},
+    children: [
+        {
+            type: "text",
+            value: "hello world"
+        },
+        {
+            type: "element",
+            tagName: "p",
+            properties: {},
+            children: [
+                {
+                    type: "element",
+                    tagName: "a",
+                    properties: {
+                        href: "https://example.com/"
+                    },
+                    children: [
+                        {
+                            type: "text",
+                            value: "www.example.com"
+                        }
+                    ]
+                },
+                {
+                    type: "element",
+                    tagName: "table",
+                    properties: {},
+                    children: [
+                        {
+                            type: "element",
+                            tagName: "thead",
+                            properties: {},
+                            children: [
+                                //it goes on and on and on
+                            ]
+                        }
+                    ]
+                },
+                {
+                    type: "text",
+                    value: "random sample"
+                },
+            ]
+        }
+    ],
 }
 ```
 
-You can also choose to install and use [invariant](https://github.com/palmerhq/tsdx#invariant) and [warning](https://github.com/palmerhq/tsdx#warning) functions.
+## Installation
 
-## Module Formats
-
-CJS, ESModules, and UMD module formats are supported.
-
-The appropriate paths are configured in `package.json` and `dist/index.js` accordingly. Please report if any issues are found.
-
-## Deploying the Example Playground
-
-The Playground is just a simple [Parcel](https://parceljs.org) app, you can deploy it anywhere you would normally deploy that. Here are some guidelines for **manually** deploying with the Netlify CLI (`npm i -g netlify-cli`):
+You can use Yarn:
 
 ```bash
-cd example # if not already in the example folder
-npm run build # builds to dist
-netlify deploy # deploy the dist folder
+yarn add @liltrendi/reastify
 ```
 
-Alternatively, if you already have a git repo connected, you can set up continuous deployment with Netlify:
+Or npm:
 
 ```bash
-netlify init
-# build command: yarn build && cd example && yarn && yarn build
-# directory to deploy: example/dist
-# pick yes for netlify.toml
+npm i @liltrendi/reastify
 ```
 
-## Named Exports
+## Usage
 
-Per Palmer Group guidelines, [always use named exports.](https://github.com/palmerhq/typescript#exports) Code split inside your React app instead of your React library.
+Import it into your app
 
-## Including Styles
-
-There are many ways to ship styles, including with CSS-in-JS. TSDX has no opinion on this, configure how you like.
-
-For vanilla CSS, you can include it at the root directory and add it to the `files` section in your `package.json`, so that it can be imported separately by your users and run through their bundler's loader.
-
-## Publishing to NPM
-
-We recommend using [np](https://github.com/sindresorhus/np).
-
-## Usage with Lerna
-
-When creating a new package with TSDX within a project set up with Lerna, you might encounter a `Cannot resolve dependency` error when trying to run the `example` project. To fix that you will need to make changes to the `package.json` file _inside the `example` directory_.
-
-The problem is that due to the nature of how dependencies are installed in Lerna projects, the aliases in the example project's `package.json` might not point to the right place, as those dependencies might have been installed in the root of your Lerna project.
-
-Change the `alias` to point to where those packages are actually installed. This depends on the directory structure of your Lerna project, so the actual path might be different from the diff below.
-
-```diff
-   "alias": {
--    "react": "../node_modules/react",
--    "react-dom": "../node_modules/react-dom"
-+    "react": "../../../node_modules/react",
-+    "react-dom": "../../../node_modules/react-dom"
-   },
+```js
+import Reastify, {reastify} from "@liltrendi/reastify"
 ```
 
-An alternative to fixing this problem would be to remove aliases altogether and define the dependencies referenced as aliases as dev dependencies instead. [However, that might cause other problems.](https://github.com/palmerhq/tsdx/issues/64)
+And pretty much pass the HTML ast data to the ``reastify`` function or as a prop to the ``Reastify`` component, like so:
+
+```js
+import React from "react"
+import {reastify} from "@liltrendi/reastify"
+
+const App = ({htmlAst}) => {
+    let reactifiedAst = reastify(htmlAst)
+    return (
+        <React.Fragment>
+            {reastifiedAst}
+        </React.Fragment>
+    )
+}
+
+export default App;
+```
+
+Or you can directly use the component it exports like this:
+
+```js
+import React from "react"
+import Reastify from "@liltrendi/reastify"
+
+const App = ({htmlAst}) => {
+    return <Reastify htmlAst={htmlAst} />
+}
+
+export default App;
+```
+
+## Props
+
+Both the function and the component use a similar model, based off of these typescript interfaces:
+
+```ts
+interface I_ReastifyNode {
+    type?: string;
+    tagName?: string;
+    children?: any[];
+    properties?: any;
+    value?: any;
+}
+
+interface I_ReastifyProps {
+    htmlAst?: I_ReastifyNode;
+    tableClassName?: string;
+    theadClassName?: string;
+    tbodyClassName?: string;
+    trClassName?: string;
+    tdClassName?: string;
+    thClassName?: string;
+    pClassName?: string;
+    h1ClassName?: string;
+    h2ClassName?: string;
+    h3ClassName?: string;
+    h4ClassName?: string;
+    h5ClassName?: string;
+    h6ClassName?: string;
+    imgClassName?: string;
+    brClassName?: string;
+    aClassName?: string;
+    uClassName?: string;
+    strongClassName?: string;
+    emClassName?: string;
+    ulClassName?: string;
+    olClassName?: string;
+    liClassName?: string;
+    preClassName?: string;
+    codeClassName?: string;
+    linkOnclick?: (event: React.MouseEvent<HTMLElement>) => any;
+}
+```
